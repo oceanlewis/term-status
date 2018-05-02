@@ -6,7 +6,6 @@ use std::env::current_dir;
 use ansi_term::Style;
 use git2::Repository;
 
-#[derive(Debug)]
 enum Error {
     GitError(git2::Error),
     IOError(std::io::Error),
