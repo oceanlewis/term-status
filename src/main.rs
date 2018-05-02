@@ -27,7 +27,7 @@ type Result<T> = std::result::Result<T, Error>;
 
 fn get_branch_name() -> Result<Option<String>> {
     let current_dir = current_dir()?;
-    let repo = Repository::open(current_dir)?;
+    let repo = Repository::discover(current_dir)?;
     let head = repo.head()?;
     match head.shorthand() {
         Some(shorthand) => Ok(Some(shorthand.to_owned())),
