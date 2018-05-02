@@ -1,0 +1,7 @@
+[package]
+name = "term-status"
+version = "0.1.0"
+authors = ["David Lewis <davidlewis@icloud.com>"]
+
+[dependencies]
+ansi_term = "*"
