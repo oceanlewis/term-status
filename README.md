@@ -1,4 +1,4 @@
-# term-status
+# term_status
 
 Because when else am I going to use `git2`?
 
@@ -18,6 +18,10 @@ end
 
 ```fish
 function fish_prompt
-  term-status
+  term_status
 end
 ```
+
+## What I learned
+
+Okay, so just for fun I wrote a simple benchmark using `test` which, while not exactly scientific, showed me something interesting. The cost of opening up a new process (`term_status`) to do something as mundane as printing a terminal prompt is significantly higher than just letting my shell do it itself. I didn't investigate whether this is specific to Rust, but I image that it's not and instead it's just the cost of doing business with processes.
