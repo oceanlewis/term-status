@@ -26,6 +26,14 @@ impl From<std::io::Error> for Error {
 
 type Result<T> = std::result::Result<T, Error>;
 
+#[inline]
+fn active_dingus_session() -> bool {
+    match std::env::var("DINGUS") {
+        Ok(_) => true,
+        Err(_) => false
+    }
+}
+
 fn print_prompt(prompt: &str) -> Result<()> {
     let current_dir = current_dir()?;
     let repo = Repository::discover(current_dir)?;
@@ -42,7 +50,10 @@ fn print_prompt(prompt: &str) -> Result<()> {
 }
 
 fn main() {
-    let prompt = " => ";
+    let prompt =
+        if active_dingus_session() { " =>> " }
+        else { " => " };
+
     match print_prompt(&prompt) {
         Ok(_) => {}
         Err(_) => println!("{}", prompt),
