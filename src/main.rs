@@ -28,7 +28,7 @@ type Result<T> = std::result::Result<T, Error>;
 
 #[inline]
 fn active_dingus_session() -> bool {
-    match std::env::var("DINGUS") {
+    match std::env::var("DINGUS_LEVEL") {
         Ok(_) => true,
         Err(_) => false
     }
