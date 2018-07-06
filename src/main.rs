@@ -1,5 +1,4 @@
-extern crate ansi_term;
-extern crate git2;
+#![feature(rust_2018_preview)]
 
 use std::env::current_dir;
 
@@ -30,7 +29,7 @@ type Result<T> = std::result::Result<T, Error>;
 fn active_dingus_session() -> bool {
     match std::env::var("DINGUS_LEVEL") {
         Ok(_) => true,
-        Err(_) => false
+        Err(_) => false,
     }
 }
 
@@ -50,9 +49,11 @@ fn print_prompt(prompt: &str) -> Result<()> {
 }
 
 fn main() {
-    let prompt =
-        if active_dingus_session() { " =>> " }
-        else { " => " };
+    let prompt = if active_dingus_session() {
+        " =>> "
+    } else {
+        " => "
+    };
 
     match print_prompt(&prompt) {
         Ok(_) => {}

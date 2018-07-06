@@ -1,7 +1,11 @@
+cargo-features = ["edition"]
+
 [package]
+edition = "2018"
+
 name = "term_status"
-version = "0.2.0"
-authors = ["David Lewis <david@inkstonehq.com>"]
+version = "0.3.0"
+authors = ["David Lewis <david@weassemble.com>"]
 
 [dependencies]
 ansi_term = "*"
