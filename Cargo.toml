@@ -4,7 +4,7 @@ cargo-features = ["edition"]
 edition = "2018"
 
 name = "term_status"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["David Lewis <david@weassemble.com>"]
 
 [dependencies]
