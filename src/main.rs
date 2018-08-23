@@ -9,6 +9,8 @@ use git2::Repository;
 enum Error {
     GitError(git2::Error),
     IOError(std::io::Error),
+    VarError(std::env::VarError),
+    ParseIntError(std::num::ParseIntError),
     NoShorthand,
 }
 
@@ -24,14 +26,24 @@ impl From<std::io::Error> for Error {
     }
 }
 
+impl From<std::env::VarError> for Error {
+    fn from(error: std::env::VarError) -> Error {
+        Error::VarError(error)
+    }
+}
+
+impl From<std::num::ParseIntError> for Error {
+    fn from(error: std::num::ParseIntError) -> Error {
+        Error::ParseIntError(error)
+    }
+}
+
 type Result<T> = std::result::Result<T, Error>;
 
 #[inline]
-fn active_dingus_session() -> bool {
-    match std::env::var("DINGUS_LEVEL") {
-        Ok(_) => true,
-        Err(_) => false
-    }
+fn dingus_level() -> Result<u32> {
+    let dingus_level = std::env::var("DINGUS_LEVEL")?;
+    Ok(dingus_level.parse::<u32>()?)
 }
 
 fn print_prompt(prompt: &str) -> Result<()> {
@@ -50,9 +62,17 @@ fn print_prompt(prompt: &str) -> Result<()> {
 }
 
 fn main() {
-    let prompt =
-        if active_dingus_session() { " =>> " }
-        else { " => " };
+    let level = dingus_level().unwrap_or(0);
+
+    let prompt = {
+            if level == 1 {
+                " => "
+            } else if level > 1 {
+                " ==> "
+            } else {
+                " > "
+            }
+    };
 
     match print_prompt(&prompt) {
         Ok(_) => {}
