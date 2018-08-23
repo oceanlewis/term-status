@@ -38,15 +38,12 @@ impl From<std::num::ParseIntError> for Error {
     }
 }
 
-type Result<T> = std::result::Result<T, Error>;
-
-#[inline]
-fn dingus_level() -> Result<u32> {
+fn dingus_level() -> Result<u32, Error> {
     let dingus_level = std::env::var("DINGUS_LEVEL")?;
     Ok(dingus_level.parse::<u32>()?)
 }
 
-fn print_prompt(prompt: &str) -> Result<()> {
+fn print_prompt(prompt: &str) -> Result<(), Error> {
     let current_dir = current_dir()?;
     let repo = Repository::discover(current_dir)?;
     let head = repo.head()?;
