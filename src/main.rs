@@ -62,12 +62,12 @@ fn main() {
     let level = dingus_level().unwrap_or(0);
 
     let prompt = {
-            if level == 1 {
-                " => "
-            } else if level > 1 {
-                " ==> "
-            } else {
+            if level == 0 {
                 " > "
+            } else if level == 1 {
+                " λ "
+            } else {
+                " λ. "
             }
     };
 
