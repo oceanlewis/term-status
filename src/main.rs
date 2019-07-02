@@ -7,10 +7,10 @@ use ansi_term::Style;
 use git2::Repository;
 
 enum Error {
-    Git(git2::Error),
-    IO(std::io::Error),
-    Var(std::env::VarError),
-    ParseInt(std::num::ParseIntError),
+    GitError(git2::Error),
+    IOError(std::io::Error),
+    VarError(std::env::VarError),
+    ParseIntError(std::num::ParseIntError),
     NoShorthand,
 }
 
