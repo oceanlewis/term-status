@@ -1,41 +1,15 @@
-extern crate ansi_term;
-extern crate git2;
-
+use ansi_term::Style;
+use derive_more::From;
+use git2::Repository;
 use std::env::current_dir;
 
-use ansi_term::Style;
-use git2::Repository;
-
+#[derive(From)]
 enum Error {
-    GitError(git2::Error),
-    IOError(std::io::Error),
-    VarError(std::env::VarError),
-    ParseIntError(std::num::ParseIntError),
+    Git(git2::Error),
+    IO(std::io::Error),
+    Var(std::env::VarError),
+    ParseInt(std::num::ParseIntError),
     NoShorthand,
-}
-
-impl From<git2::Error> for Error {
-    fn from(error: git2::Error) -> Error {
-        Error::GitError(error)
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(error: std::io::Error) -> Error {
-        Error::IOError(error)
-    }
-}
-
-impl From<std::env::VarError> for Error {
-    fn from(error: std::env::VarError) -> Error {
-        Error::VarError(error)
-    }
-}
-
-impl From<std::num::ParseIntError> for Error {
-    fn from(error: std::num::ParseIntError) -> Error {
-        Error::ParseIntError(error)
-    }
 }
 
 fn dingus_level() -> Result<u32, Error> {
@@ -43,36 +17,32 @@ fn dingus_level() -> Result<u32, Error> {
     Ok(dingus_level.parse::<u32>()?)
 }
 
-fn print_prompt(prompt: &str) -> Result<(), Error> {
+fn git_branch() -> Result<String, Error> {
     let current_dir = current_dir()?;
     let repo = Repository::discover(current_dir)?;
     let head = repo.head()?;
-    let shorthand = head.shorthand().ok_or(Error::NoShorthand)?;
+    Ok(head.shorthand().ok_or(Error::NoShorthand)?.to_string())
+}
 
-    println!(
-        "{}{}",
-        Style::new().bold().paint(format!("[{}]", shorthand)),
-        prompt
-    );
+fn style_one() {
+    let level = dingus_level().unwrap_or(0);
 
-    Ok(())
+    let prompt = match level {
+        0 => " > ",
+        1 => " λ ",
+        _ => " λ. ",
+    };
+
+    match git_branch().ok() {
+        Some(git_branch) => println!(
+            "{branch}{prompt}",
+            branch = Style::new().bold().paint(format!("[{}]", git_branch)),
+            prompt = prompt
+        ),
+        None => println!("{}", prompt),
+    }
 }
 
 fn main() {
-    let level = dingus_level().unwrap_or(0);
-
-    let prompt = {
-            if level == 0 {
-                " > "
-            } else if level == 1 {
-                " λ "
-            } else {
-                " λ. "
-            }
-    };
-
-    match print_prompt(&prompt) {
-        Ok(_) => {}
-        Err(_) => println!("{}", prompt),
-    }
+    style_one();
 }
