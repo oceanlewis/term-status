@@ -24,25 +24,65 @@ fn git_branch() -> Result<String, Error> {
     Ok(head.shorthand().ok_or(Error::NoShorthand)?.to_string())
 }
 
-fn style_one() {
-    let level = dingus_level().unwrap_or(0);
-
-    let prompt = match level {
+fn prompt_01() -> String {
+    match dingus_level().unwrap_or(0) {
         0 => " > ",
         1 => " λ ",
         _ => " λ. ",
-    };
+    }
+    .to_string()
+}
 
-    match git_branch().ok() {
-        Some(git_branch) => println!(
+fn style_fallback() -> String {
+    prompt_01()
+}
+
+fn classic() -> Result<String, Error> {
+    git_branch().map(|git_branch| {
+        format!(
             "{branch}{prompt}",
             branch = Style::new().bold().paint(format!("[{}]", git_branch)),
-            prompt = prompt
-        ),
-        None => println!("{}", prompt),
+            prompt = prompt_01()
+        )
+    })
+}
+
+fn new() -> Result<String, Error> {
+    let cwd = current_dir()?;
+    let home_dir = dirs::home_dir().expect("home directory should exist");
+
+
+    if cwd.starts_with(&home_dir) {
+        let until_home = cwd.iter().fold(0, |home_is_x_directories_deep, current_path_part| {
+            
+            unimplemented!()
+        });
+
+        cwd.iter().skip(until_home);
+    }
+
+
+    unimplemented!()
+}
+
+enum Status {
+    Classic,
+    New,
+}
+
+fn term_status(style: Status) -> Result<String, Error> {
+    match style {
+        Classic => classic(),
+        New => new(),
     }
 }
 
 fn main() {
-    style_one();
+    println!(
+        "{}",
+        match term_status(Status::Classic) {
+            Ok(status) => status,
+            Err(_) => style_fallback(),
+        }
+    );
 }
