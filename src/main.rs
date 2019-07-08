@@ -66,13 +66,22 @@ mod term {
                     .collect::<VecDeque<String>>(),
                 )
               });
+          let git_branch = git_branch_01().unwrap_or_default();
 
-          Ok(format!(
-            "\n{directory}\n{git}{prompt}",
-            directory = directory_part,
-            git = git_branch_01().unwrap_or_default(),
-            prompt = prompt_01()
-          ))
+          match directory_part.len() + git_branch.len() {
+            length if length <= 3 => Ok(format!(
+              "\n{directory}{git}{prompt}",
+              directory = directory_part,
+              git = git_branch_01().unwrap_or_default(),
+              prompt = prompt_01()
+            )),
+            _ => Ok(format!(
+              "\n{directory}\n{git}{prompt}",
+              directory = directory_part,
+              git = git_branch,
+              prompt = prompt_01()
+            )),
+          }
         }
       }
     }
